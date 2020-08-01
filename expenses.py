@@ -42,7 +42,7 @@ def update_expense_table():
 
 def month_sum():
     #this method will calculate the sum of the expenses.
-    
+   
 
 
 #this is the GUI for the application using Tkinter

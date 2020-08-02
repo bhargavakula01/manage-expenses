@@ -27,7 +27,7 @@ def create_expense_table():
     cursor.execute(query,(table_entry.get()))
     print("table created")
     connection.commit()
-    connection.close()
+    connection.lose()
 
 #updates information within a particular table
 def update_expense_table():
@@ -52,6 +52,8 @@ def month_sum():
     sum = cursor.fetchall()
     sumspent_listbox.delete(0,END)
     sumspent_listbox.insert(END,sum)
+    connection.commit()
+    connection.close()
 
    
 

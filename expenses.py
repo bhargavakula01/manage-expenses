@@ -23,7 +23,7 @@ def create_expense_table():
     connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    query= "CREATE TABLE %s(date text, place text, items_bought text, total_amount_spent text, category text);" #<-- %s is a placeholder allowing the user to input any value 
+    query= "CREATE TABLE %s(date text, place text, items_bought text, total_amount_spent int, category text);" #<-- %s is a placeholder allowing the user to input any value 
     cursor.execute(query,(table_entry.get()))
     print("table created")
     connection.commit()

@@ -23,7 +23,7 @@ def create_expense_table():
     connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    query= "CREATE TABLE %s(date text, place text, items_bought text, total_amount_spent int, category text);" #<-- %s is a placeholder allowing the user to input any value 
+    query= "CREATE TABLE %s(place text, items_bought text, total_amount_spent int, category text);" #<-- %s is a placeholder allowing the user to input any value 
     cursor.execute(query,(table_entry.get()))
     print("table created")
     connection.commit()
@@ -34,7 +34,7 @@ def update_expense_table():
     connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    query = "INSERT INTO %s(date, place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s, %s);"
+    query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
     cursor.execute(query,(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get()))
     print('expenses updated')
     connection.commit()
@@ -42,6 +42,17 @@ def update_expense_table():
 
 def month_sum():
     #this method will calculate the sum of the expenses.
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    cursor = connection.cursor()
+    print("database connected...")
+
+    query = "SELECT sum(total_amount_spent) FROM %s;"
+
+    cursor.execute(query,(table_entry.get()))
+    sum = cursor.fetchall()
+    sumspent_listbox.delete(0,END)
+    sumspent_listbox.insert(END,sum)
+
    
 
 

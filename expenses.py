@@ -5,7 +5,7 @@ import psycopg2
 # the month/year will be the name of the database on postgreSQL
 # will help to check if that month has already been created
 table_title_dates = []
-
+'''
 #load from file method
 def loadFromFile():
     file = open('tableDates.txt', 'r')
@@ -20,7 +20,7 @@ def saveToFile(table_name):
     file = open('tableDates.txt', 'a')
     file.write(table_name)
     file.close()
-
+'''
 
 # this function will create a new database on postgreSQL
 
@@ -43,12 +43,12 @@ def main():
 
 #this method will create a new table within postgresql
 def create_expense_table():
-    tablename = str(table_entry.get())
+    tablename = table_entry.get()
     connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    query= "CREATE TABLE %s(place text, items_bought text, total_amount_spent float, category text);" #<-- %s is a placeholder allowing the user to input any value 
-    cursor.execute(query,(tablename))
+    query= "CREATE TABLE %s(place text, items_bought text, total_amount_spent integer, category text);" #<-- %s is a placeholder allowing the user to input any value 
+    cursor.execute(query,(tablename, ))
     print("table created")
     connection.commit()
     connection.close()
@@ -59,7 +59,7 @@ def update_expense_table(table_name, place, items, spent, category):
     cursor = connection.cursor()
     print('database connected...')
     query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
-    cursor.execute(query,(table_name, place, items, float(spent), category))
+    cursor.execute(query,(table_name, place, items, int(spent), category))
     print('expenses updated')
     connection.commit()
     connection.close()

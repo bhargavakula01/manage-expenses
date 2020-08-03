@@ -6,49 +6,73 @@ import psycopg2
 # will help to check if that month has already been created
 table_title_dates = []
 
+#load from file method
+def loadFromFile():
+    file = open('tableDates.txt', 'r')
+    f1 = file.readlines()
+    for x in f1:
+        table_title_dates.append(x)
+    file.close()
+
+#save to file method
+def saveToFile(table_name):
+    table_title_dates.append(table_name)
+    file = open('tableDates.txt', 'a')
+    file.write(table_name)
+    file.close()
+
+
 # this function will create a new database on postgreSQL
 
-def mainMethod():
+def main():
+    if(len(table_title_dates) == 0):
+        create_expense_table()
+        update_expense_table(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get())
+    '''
     for x in table_title_dates:
+        #loadFromFile()
         if(x == table_entry.get()):
             update_expense_table()
         else:
-            table_title_dates.append(table_entry.get())
-            create_expense_table()
-            update_expense_table()
-        month_sum()
+        #table_title_dates.append(table_entry.get())
+        #savetofile(table_entry.get())
+        create_expense_table(table_entry.get())
+        update_expense_table(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get())
+    '''
+    month_sum(table_entry.get())
 
 #this method will create a new table within postgresql
 def create_expense_table():
-    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    tablename = str(table_entry.get())
+    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    query= "CREATE TABLE %s(place text, items_bought text, total_amount_spent int, category text);" #<-- %s is a placeholder allowing the user to input any value 
-    cursor.execute(query,(table_entry.get()))
+    query= "CREATE TABLE %s(place text, items_bought text, total_amount_spent float, category text);" #<-- %s is a placeholder allowing the user to input any value 
+    cursor.execute(query,(tablename))
     print("table created")
     connection.commit()
-    connection.lose()
+    connection.close()
 
 #updates information within a particular table
-def update_expense_table():
-    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+def update_expense_table(table_name, place, items, spent, category):
+    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
     query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
-    cursor.execute(query,(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get()))
+    cursor.execute(query,(table_name, place, items, float(spent), category))
     print('expenses updated')
     connection.commit()
     connection.close()
 
-def month_sum():
+def month_sum(table_name):
     #this method will calculate the sum of the expenses.
-    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print("database connected...")
 
     query = "SELECT sum(total_amount_spent) FROM %s;"
 
-    cursor.execute(query,(table_entry.get()))
+    cursor.execute(query,(table_name))
     sum = cursor.fetchall()
     sumspent_listbox.delete(0,END)
     sumspent_listbox.insert(END,sum)
@@ -65,7 +89,7 @@ root = Tk()
 frame = Frame(root)
 frame.pack()
 
-tablename_label = Label(frame, text= 'table name(month/year : x/xxxx)')
+tablename_label = Label(frame, text= 'table name(month-year : x-xxxx)')
 table_entry = Entry(frame)
 tablename_label.grid(row= 0, column= 0)
 table_entry.grid(row= 0, column= 1)
@@ -92,7 +116,7 @@ category_entry = Entry(frame)
 category_label.grid(row= 4, column= 0)
 category_entry.grid(row= 4, column= 1)
 
-enter_info = Button(frame, text= 'enter information', command= lambda: mainMethod())
+enter_info = Button(frame, text= 'enter information', command= main)
 enter_info.grid(row= 5, column= 1)
 
 sumspent_label = Label(frame, text= 'total spent this month')

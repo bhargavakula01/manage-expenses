@@ -6,7 +6,8 @@ from psycopg2 import sql
 # the month/year will be the name of the database on postgreSQL
 # will help to check if that month has already been created
 table_title_dates = []
-'''
+
+
 #load from file method
 def loadFromFile():
     file = open('tableDates.txt', 'r')
@@ -19,39 +20,33 @@ def loadFromFile():
 def saveToFile(table_name):
     table_title_dates.append(table_name)
     file = open('tableDates.txt', 'a')
-    file.write(table_name)
+    file.write('\n' + table_name)
     file.close()
-'''
 
-'''
+
+
 def find_table_title(table_name_input):
-    for x in table_title dates:
+    for x in table_title_dates:
         if(x == table_name_input):
             return x
-    return null
-'''
+    return None
+
 
 # this function will create a new database on postgreSQL
 def main():
-    if(len(table_title_dates) == 0):
+    loadFromFile()
+    strvalue = find_table_title(table_entry.get())
+    if(len(table_title_dates) == 0 or strvalue == None):
+        saveToFile(table_entry.get())
         create_expense_table(table_entry.get())
         update_expense_table(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get())
-    '''
-    for x in table_title_dates:
-        #loadFromFile()
-        if(x == table_entry.get()):
-            update_expense_table()
-        else:
-        #table_title_dates.append(table_entry.get())
-        #savetofile(table_entry.get())
-        create_expense_table(table_entry.get())
+    else:
         update_expense_table(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get())
-    '''
-    #month_sum(table_entry.get())
+    month_sum(table_entry.get())
 
 #this method will create a new table within postgresql
 def create_expense_table(tablename):
-    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
     cursor.execute(sql.SQL("CREATE TABLE {}(place text, items_bought text, total_amount_spent integer, category text);").format(sql.Identifier(tablename)))
@@ -61,10 +56,10 @@ def create_expense_table(tablename):
 
 #updates information within a particular table
 def update_expense_table(table_name, place, items, spent, category):
-    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    cursor.execute("sql.SQL(INSERT INTO {}(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);").format(sql.Identifier(tablename)),[place, items, int(spent), category])
+    cursor.execute(sql.SQL("INSERT INTO {}(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);").format(sql.Identifier(table_name)),[place, items, int(spent), category])
     #query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
     #cursor.execute(query,(table_name, place, items, int(spent), category))
     print('expenses updated')
@@ -73,12 +68,12 @@ def update_expense_table(table_name, place, items, spent, category):
 
 def month_sum(table_name):
     #this method will calculate the sum of the expenses.
-    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print("database connected...")
-    query = "SELECT sum(total_amount_spent) FROM %s;"
-    cursor.execute(query,(table_name))
-    sum = cursor.fetchall()
+    cursor.execute(sql.SQL("SELECT sum(total_amount_spent) FROM {};".format(sql.Identifier(tabe_name))))
+    totalamount = cursor.fetchall()
+    #cursor.execute(query,(table_name))
     sumspent_listbox.delete(0,END)
     sumspent_listbox.insert(END,sum)
     connection.commit()

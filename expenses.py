@@ -59,7 +59,7 @@ def update_expense_table(table_name, place, items, spent, category):
     connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    cursor.execute(sql.SQL("INSERT INTO {}(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);").format(sql.Identifier(table_name)),[place, items, int(spent), category])
+    cursor.execute(sql.SQL("INSERT INTO {}(place, items_bought, total_amount_spent, category) VALUES (%s, %s, %s, %s);").format(sql.Identifier(table_name)),[place, items, int(spent), category])
     #query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
     #cursor.execute(query,(table_name, place, items, int(spent), category))
     print('expenses updated')

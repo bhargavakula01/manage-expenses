@@ -23,10 +23,18 @@ def saveToFile(table_name):
     file.close()
 '''
 
+'''
+def find_table_title(table_name_input):
+    for x in table_title dates:
+        if(x == table_name_input):
+            return x
+    return null
+'''
+
 # this function will create a new database on postgreSQL
 def main():
     if(len(table_title_dates) == 0):
-        create_expense_table()
+        create_expense_table(table_entry.get())
         update_expense_table(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get())
     '''
     for x in table_title_dates:
@@ -39,12 +47,11 @@ def main():
         create_expense_table(table_entry.get())
         update_expense_table(table_entry.get(), place_entry.get(), itemsbought_entry.get(), total_spent_entry.get(), category_entry.get())
     '''
-    month_sum(table_entry.get())
+    #month_sum(table_entry.get())
 
 #this method will create a new table within postgresql
-def create_expense_table():
-    tablename = table_entry.get()
-    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+def create_expense_table(tablename):
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
     cursor.execute(sql.SQL("CREATE TABLE {}(place text, items_bought text, total_amount_spent integer, category text);").format(sql.Identifier(tablename)))
@@ -54,32 +61,28 @@ def create_expense_table():
 
 #updates information within a particular table
 def update_expense_table(table_name, place, items, spent, category):
-    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
-    cursor.execute(query,(table_name, place, items, int(spent), category))
+    cursor.execute("sql.SQL(INSERT INTO {}(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);").format(sql.Identifier(tablename)),[place, items, int(spent), category])
+    #query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
+    #cursor.execute(query,(table_name, place, items, int(spent), category))
     print('expenses updated')
     connection.commit()
     connection.close()
 
 def month_sum(table_name):
     #this method will calculate the sum of the expenses.
-    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print("database connected...")
-
     query = "SELECT sum(total_amount_spent) FROM %s;"
-
     cursor.execute(query,(table_name))
     sum = cursor.fetchall()
     sumspent_listbox.delete(0,END)
     sumspent_listbox.insert(END,sum)
     connection.commit()
     connection.close()
-
-   
-
 
 #this is the GUI for the application using Tkinter
 # need to place widgets within a grid
@@ -92,7 +95,6 @@ tablename_label = Label(frame, text= 'table name(month-year : x-xxxx)')
 table_entry = Entry(frame)
 tablename_label.grid(row= 0, column= 0)
 table_entry.grid(row= 0, column= 1)
-
 
 place_label = Label(frame, text= 'place')
 place_entry = Entry(frame)
@@ -109,7 +111,6 @@ total_spent_entry = Entry(frame)
 total_spent_label.grid(row= 3, column= 0)
 total_spent_entry.grid(row= 3, column= 1)
 
-
 category_label = Label(frame, text= 'category')
 category_entry = Entry(frame)
 category_label.grid(row= 4, column= 0)
@@ -122,8 +123,5 @@ sumspent_label = Label(frame, text= 'total spent this month')
 sumspent_label.grid(row= 7, column= 1)
 sumspent_listbox = Listbox(frame)
 sumspent_listbox.grid(row= 8, column= 1)
-
-
-
 
 root.mainloop()

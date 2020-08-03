@@ -1,5 +1,6 @@
 from tkinter import *
 import psycopg2
+from psycopg2 import sql
 
 # Each month I will do expenses
 # the month/year will be the name of the database on postgreSQL
@@ -23,7 +24,6 @@ def saveToFile(table_name):
 '''
 
 # this function will create a new database on postgreSQL
-
 def main():
     if(len(table_title_dates) == 0):
         create_expense_table()
@@ -47,8 +47,7 @@ def create_expense_table():
     connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
-    query= "CREATE TABLE %s(place text, items_bought text, total_amount_spent integer, category text);" #<-- %s is a placeholder allowing the user to input any value 
-    cursor.execute(query,(tablename, ))
+    cursor.execute(sql.SQL("CREATE TABLE {}(place text, items_bought text, total_amount_spent integer, category text);").format(sql.Identifier(tablename)))
     print("table created")
     connection.commit()
     connection.close()

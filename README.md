@@ -10,3 +10,6 @@
 - https://stackoverflow.com/questions/13793399/passing-table-name-as-a-parameter-in-psycopg2
 
 # How to operate this program
+
+# Future Improvements
+I plan to use a django framework in order to allow user to access their expenses on a web browser

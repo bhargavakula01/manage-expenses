@@ -20,7 +20,7 @@ def loadFromFile():
 def saveToFile(table_name):
     table_title_dates.append(table_name)
     file = open('tableDates.txt', 'a')
-    file.write('\n' + table_name)
+    file.write(table_name + "\n")
     file.close()
 
 

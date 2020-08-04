@@ -8,6 +8,7 @@
 
 # Resources that I used to help me with this project
 - https://stackoverflow.com/questions/13793399/passing-table-name-as-a-parameter-in-psycopg2
+- https://tableplus.com/blog/2018/04/postgresql-how-to-export-table-to-csv-file-with-header.html
 
 # How to operate this program
 

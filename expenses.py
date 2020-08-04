@@ -24,7 +24,7 @@ def saveToFile(table_name):
     file.close()
 
 
-
+#helps to find any table name within the list
 def find_table_title(table_name_input):
     for x in table_title_dates:
         if(x == table_name_input):
@@ -46,7 +46,7 @@ def main():
 
 #this method will create a new table within postgresql
 def create_expense_table(tablename):
-    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
     cursor.execute(sql.SQL("CREATE TABLE {}(place text, items_bought text, total_amount_spent integer, category text);").format(sql.Identifier(tablename)))
@@ -56,7 +56,7 @@ def create_expense_table(tablename):
 
 #updates information within a particular table
 def update_expense_table(table_name, place, items, spent, category):
-    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print('database connected...')
     cursor.execute(sql.SQL("INSERT INTO {}(place, items_bought, total_amount_spent, category) VALUES (%s, %s, %s, %s);").format(sql.Identifier(table_name)),[place, items, int(spent), category])
@@ -68,7 +68,7 @@ def update_expense_table(table_name, place, items, spent, category):
 
 def month_sum(table_name):
     #this method will calculate the sum of the expenses.
-    connection = psycopg2.connect(dbname= 'postgres', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print("database connected...")
     cursor.execute(sql.SQL("SELECT sum(total_amount_spent) FROM {};".format(sql.Identifier(tabe_name))))
@@ -76,6 +76,14 @@ def month_sum(table_name):
     #cursor.execute(query,(table_name))
     sumspent_listbox.delete(0,END)
     sumspent_listbox.insert(END,sum)
+    connection.commit()
+    connection.close()
+
+#export psql table into a csv file
+def export(table_name):
+    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
+    cursor = connection.cursor()
+    cursor.execute(sql.SQL("\copy {} to '{}.csv' csv header;").format(sql.Identifier(table_name), sql.Identifier(table_name)))
     connection.commit()
     connection.close()
 

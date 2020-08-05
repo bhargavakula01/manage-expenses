@@ -122,6 +122,9 @@ category_entry.grid(row= 4, column= 1)
 enter_info = Button(frame, text= 'enter information', command= main)
 enter_info.grid(row= 5, column= 1)
 
+export_info = Button(frame, text= 'export information', command= lambda: export_info())
+export_info.grid(row = 5, column= 2)
+
 sumspent_label = Label(frame, text= 'total spent this month')
 sumspent_label.grid(row= 7, column= 1)
 sumspent_listbox = Listbox(frame)

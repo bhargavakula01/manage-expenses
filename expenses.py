@@ -6,9 +6,11 @@ from psycopg2 import sql
 # the month/year will be the name of the database on postgreSQL
 # will help to check if that month has already been created
 table_title_dates = []
+totalamount = 0
 
 
-#load from file method
+# load from file method
+#loads table names into a list. Method to store table names after closing application
 def loadFromFile():
     file = open('tableDates.txt', 'r')
     f1 = file.readlines()
@@ -16,7 +18,8 @@ def loadFromFile():
         table_title_dates.append(x)
     file.close()
 
-#save to file method
+# save to file method
+#method to save table names to a txt file.
 def saveToFile(table_name):
     table_title_dates.append(table_name)
     file = open('tableDates.txt', 'a')
@@ -24,7 +27,8 @@ def saveToFile(table_name):
     file.close()
 
 
-#helps to find any table name within the list
+# helps to find any table name within the list
+# Uses linear search
 def find_table_title(table_name_input):
     for x in table_title_dates:
         if(x == table_name_input):
@@ -60,25 +64,23 @@ def update_expense_table(table_name, place, items, spent, category):
     cursor = connection.cursor()
     print('database connected...')
     cursor.execute(sql.SQL("INSERT INTO {}(place, items_bought, total_amount_spent, category) VALUES (%s, %s, %s, %s);").format(sql.Identifier(table_name)),[place, items, int(spent), category])
-    #query = "INSERT INTO %s(place, items_bought, total_amount_spend, category) VALUES (%s, %s, %s, %s);"
-    #cursor.execute(query,(table_name, place, items, int(spent), category))
     print('expenses updated')
     connection.commit()
     connection.close()
 
+#this method will calculate the sum of the expenses.
 def month_sum(table_name):
-    #this method will calculate the sum of the expenses.
     connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print("database connected...")
-    cursor.execute(sql.SQL("SELECT sum(total_amount_spent) FROM {};".format(sql.Identifier(tabe_name))))
+    cursor.execute(sql.SQL("SELECT sum(total_amount_spent) FROM {};").format(sql.Identifier(table_name)))
     totalamount = cursor.fetchall()
     #cursor.execute(query,(table_name))
     sumspent_listbox.delete(0,END)
-    sumspent_listbox.insert(END,sum)
+    sumspent_listbox.insert(END,totalamount)
     connection.commit()
     connection.close()
-
+'''
 #export psql table into a csv file
 def export(table_name):
     connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
@@ -86,6 +88,7 @@ def export(table_name):
     cursor.execute(sql.SQL("\copy {} to '{}.csv' csv header;").format(sql.Identifier(table_name), sql.Identifier(table_name)))
     connection.commit()
     connection.close()
+'''
 
 #this is the GUI for the application using Tkinter
 # need to place widgets within a grid
@@ -121,10 +124,10 @@ category_entry.grid(row= 4, column= 1)
 
 enter_info = Button(frame, text= 'enter information', command= main)
 enter_info.grid(row= 5, column= 1)
-
+'''
 export_info = Button(frame, text= 'export information', command= lambda: export_info())
 export_info.grid(row = 5, column= 2)
-
+'''
 sumspent_label = Label(frame, text= 'total spent this month')
 sumspent_label.grid(row= 7, column= 1)
 sumspent_listbox = Listbox(frame)

@@ -1,7 +1,7 @@
 from tkinter import *
 import psycopg2
 from psycopg2 import sql
-import csv
+
 
 # Each month I will do expenses
 # the month/year will be the name of the database on postgreSQL

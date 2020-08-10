@@ -1,6 +1,7 @@
 from tkinter import *
 import psycopg2
 from psycopg2 import sql
+import csv
 
 # Each month I will do expenses
 # the month/year will be the name of the database on postgreSQL
@@ -73,22 +74,13 @@ def month_sum(table_name):
     connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
     cursor = connection.cursor()
     print("database connected...")
-    cursor.execute(sql.SQL("SELECT sum(total_amount_spent) FROM {};").format(sql.Identifier(table_name)))
+    cursor.execute(sql.SQL("SELECT category,sum(total_amount_spent) FROM {} GROUP BY category;").format(sql.Identifier(table_name)))
     totalamount = cursor.fetchall()
     #cursor.execute(query,(table_name))
     sumspent_listbox.delete(0,END)
     sumspent_listbox.insert(END,totalamount)
     connection.commit()
     connection.close()
-'''
-#export psql table into a csv file
-def export(table_name):
-    connection = psycopg2.connect(dbname= 'expenses', user= 'postgres', password = 'rajabaru', host= 'localhost', port= '5432')
-    cursor = connection.cursor()
-    cursor.execute(sql.SQL("\copy {} to '{}.csv' csv header;").format(sql.Identifier(table_name), sql.Identifier(table_name)))
-    connection.commit()
-    connection.close()
-'''
 
 #this is the GUI for the application using Tkinter
 # need to place widgets within a grid
@@ -124,10 +116,8 @@ category_entry.grid(row= 4, column= 1)
 
 enter_info = Button(frame, text= 'enter information', command= main)
 enter_info.grid(row= 5, column= 1)
-'''
-export_info = Button(frame, text= 'export information', command= lambda: export_info())
-export_info.grid(row = 5, column= 2)
-'''
+
+
 sumspent_label = Label(frame, text= 'total spent this month')
 sumspent_label.grid(row= 7, column= 1)
 sumspent_listbox = Listbox(frame)

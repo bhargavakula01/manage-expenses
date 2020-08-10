@@ -10,7 +10,10 @@
 - https://stackoverflow.com/questions/13793399/passing-table-name-as-a-parameter-in-psycopg2
 - https://tableplus.com/blog/2018/04/postgresql-how-to-export-table-to-csv-file-with-header.html
 
-# How to operate this program
+# How to create a csv file of your expenses
+- create a csv file and name it
+- perform this query in psql
+    - \copy (SELECT * FROM [table name]) TO '/Users/bhargav/desktop/my-expenses/[csv file name].csv' with csv header;
 
 # Future Improvements
 I plan to use a django framework in order to allow user to access their expenses on a web browser
